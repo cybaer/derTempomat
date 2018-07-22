@@ -31,7 +31,6 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
-LIBS:dd-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -1358,12 +1357,12 @@ $EndComp
 $Comp
 L Conn_01x06_Male J6
 U 1 1 5B41148F
-P 7700 4400
-F 0 "J6" H 7700 4700 50  0000 C CNN
-F 1 " " H 7700 4000 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_1x06_Pitch2.54mm" H 7700 4400 50  0001 C CNN
-F 3 "" H 7700 4400 50  0001 C CNN
-	1    7700 4400
+P 7300 4400
+F 0 "J6" H 7300 4700 50  0000 C CNN
+F 1 " " H 7300 4000 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x06_Pitch2.54mm" H 7300 4400 50  0001 C CNN
+F 3 "" H 7300 4400 50  0001 C CNN
+	1    7300 4400
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1547,11 +1546,7 @@ F 3 "" H 9500 5000 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	7900 4200 7900 3500
-Wire Wire Line
-	7900 3500 8800 3500
-Wire Wire Line
-	7900 4300 8800 4300
+	7500 4300 8800 4300
 Wire Wire Line
 	8800 4300 8800 4150
 Wire Wire Line
@@ -1568,9 +1563,9 @@ F 3 "" H 8200 4700 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	7900 4700 8200 4700
+	7500 4700 8200 4700
 Wire Wire Line
-	7900 4400 8800 4400
+	7500 4400 8800 4400
 $Comp
 L MCP6002-xSN U4
 U 2 1 5B414CEE
@@ -1627,7 +1622,7 @@ F 3 "" H 8650 5500 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	7900 4500 8500 4500
+	7500 4500 8500 4500
 Wire Wire Line
 	8500 4500 8500 5500
 Wire Wire Line
@@ -1831,4 +1826,29 @@ F 3 "" H 4050 4000 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Connection ~ 4050 3900
+Text HLabel 3100 5000 2    60   Output ~ 0
+LED4
+$Comp
+L R R35
+U 1 1 5B54F2BE
+P 7850 4600
+F 0 "R35" V 7930 4600 50  0000 C CNN
+F 1 "1K" V 7850 4600 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805_HandSoldering" V 7780 4600 50  0001 C CNN
+F 3 "" H 7850 4600 50  0001 C CNN
+	1    7850 4600
+	0    -1   -1   0   
+$EndComp
+Text HLabel 8100 4600 2    60   Input ~ 0
+LED4
+Wire Wire Line
+	7500 4600 7700 4600
+Wire Wire Line
+	8000 4600 8100 4600
+Wire Wire Line
+	7500 4200 8500 4200
+Wire Wire Line
+	8500 4200 8500 3500
+Wire Wire Line
+	8500 3500 8800 3500
 $EndSCHEMATC
