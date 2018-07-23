@@ -21,15 +21,32 @@
 #define HARDWARECONFIG_H_
 
 #include "lib/ui/EdgeTrigger.h"
+#include "avrlib/devices/switch.h"
+#include "avrlib/devices/mcp23s17.h"
+#include "avrlib/devices/bicolor_led_group.h"
+#include "avrlib/devices/switch_group.h"
+
+
 #include "avrlib/base.h"
 #include "avrlib/gpio.h"
+#include "avrlib/spi.h"
 #include "avrlib/adc.h"
 
 using namespace avrlib;
 static const uint8_t MAX_CV = 122;
 
-typedef EdgeTrigger<Gpio<PortD, 7>, 0> Clock;  // 13
-typedef EdgeTrigger<Gpio<PortB, 2>, 0> ResetIn;  // 16
+typedef DebouncedSwitch< Gpio<PortB, 0> > Switch_A;  // 12
+typedef DebouncedSwitch< Gpio<PortD, 6> > Switch_B;  // 10
+typedef DebouncedSwitch< Gpio<PortD, 5> > Switch_Mod;  // 9
+
+typedef Gpio<PortB, 1> LED_A;  // 13
+typedef Gpio<PortD, 7> LED_B;  // 11
+typedef Gpio<PortD, 3> LED_Mod;  // 1
+typedef Gpio<PortD, 4> LED_Takt;  // 2
+
+typedef EdgeTrigger<Gpio<PortC, 0>, 0> Clock;  // 23
+typedef EdgeTrigger<Gpio<PortC, 1>, 0> ResetIn;  // 24
+typedef Gpio<PortD, 1> ModIn;  // 31
 
 typedef Inverter<Gpio<PortD, 4> > Output_1;  // 6
 typedef Inverter<Gpio<PortD, 2> > Output_2;  // 4
@@ -37,9 +54,31 @@ typedef Inverter<Gpio<PortD, 1> > Output_3;  // 3
 typedef Inverter<Gpio<PortD, 0> > Output_4;  // 2
 typedef Inverter<Gpio<PortD, 3> > Output_5;  // x
 
+// HW SPI
+static const uint8_t SPI_Speed = 2;
+typedef SpiMasterBase<MSB_FIRST, SPI_Speed> spi_master;
+
+// Port Extender
+typedef Gpio<PortB, 2> ExtenderSlaveSelect;
+typedef MCP23S17<spi_master, ExtenderSlaveSelect, 0> portExtender;
+
+typedef LED<PortPin<portExtender, PORT_A, 0>, PortPin<portExtender, PORT_A, 1> > LED_1;
+typedef LED<PortPin<portExtender, PORT_A, 3>, PortPin<portExtender, PORT_A, 4> > LED_2;
+typedef LED<PortPin<portExtender, PORT_A, 5>, PortPin<portExtender, PORT_A, 7> > LED_3;
+typedef LED<PortPin<portExtender, PORT_B, 5>, PortPin<portExtender, PORT_B, 3> > LED_4;
+typedef LED<PortPin<portExtender, PORT_B, 2>, PortPin<portExtender, PORT_B, 0> > LED_5;
+
+typedef Switch<portExtender, PORT_A, 0> Switch_1;
+typedef Switch<portExtender, PORT_A, 2> Switch_2;
+typedef Switch<portExtender, PORT_A, 6> Switch_3;
+typedef Switch<portExtender, PORT_B, 4> Switch_4;
+typedef Switch<portExtender, PORT_B, 1> Switch_5;
+
+
+
 typedef Gpio<PortB, 7> Debug;                    // 10
 
-static const uint8_t AdcChannelCV = 1;
+static const uint8_t AdcChannelCV = 7;
 
 extern Adc adc;
 
