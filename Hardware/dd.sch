@@ -31,6 +31,7 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
+LIBS:dd-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -1757,7 +1758,7 @@ Text HLabel 3100 3950 2    60   Input ~ 0
 Rst
 Text HLabel 3100 3850 2    60   Input ~ 0
 Clk
-Text HLabel 1200 4350 0    60   Input ~ 0
+Text HLabel 3100 4700 2    60   Input ~ 0
 Mod
 Text HLabel 1200 4450 0    60   Input ~ 0
 CV
@@ -1851,4 +1852,30 @@ Wire Wire Line
 	8500 4200 8500 3500
 Wire Wire Line
 	8500 3500 8800 3500
+Text HLabel 3100 4800 2    60   Output ~ 0
+Debug
+$Comp
+L Conn_01x02_Male J7
+U 1 1 5B58B266
+P 7350 5100
+F 0 "J7" H 7350 5200 50  0000 C CNN
+F 1 "Conn_01x02_Male" H 7350 4900 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x02_Pitch2.54mm" H 7350 5100 50  0001 C CNN
+F 3 "" H 7350 5100 50  0001 C CNN
+	1    7350 5100
+	1    0    0    -1  
+$EndComp
+Text HLabel 7550 5100 2    60   Input ~ 0
+Debug
+$Comp
+L GND #PWR053
+U 1 1 5B58B4A4
+P 7550 5200
+F 0 "#PWR053" H 7550 4950 50  0001 C CNN
+F 1 "GND" H 7550 5050 50  0000 C CNN
+F 2 "" H 7550 5200 50  0001 C CNN
+F 3 "" H 7550 5200 50  0001 C CNN
+	1    7550 5200
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
