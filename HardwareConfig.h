@@ -44,7 +44,7 @@ typedef Gpio<PortD, 7> LED_B;  // 11
 typedef Gpio<PortD, 3> LED_Mod;  // 1
 typedef Gpio<PortD, 4> LED_Takt;  // 2
 
-typedef EdgeTrigger<Gpio<PortC, 0>, 0> Clock;  // 23
+typedef EdgeTrigger<Gpio<PortC, 0>, 0> ClockIn;  // 23
 typedef EdgeTrigger<Gpio<PortC, 1>, 0> ResetIn;  // 24
 typedef Gpio<PortD, 1> ModIn;  // 31
 
@@ -85,7 +85,7 @@ extern Adc adc;
 inline void initInputs(void)
 {
   ResetIn::init();
-  Clock::init();
+  ClockIn::init();
 }
 inline void initOutputs(void)
 {
