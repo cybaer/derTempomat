@@ -25,7 +25,15 @@ void StepControl::reset()
 void StepControl::onTick()
 {
   ++m_TotalTick;
-  if(m_TotalTick == m_TotalTickMax) reset();
+  if(m_TotalTick == m_TotalTickMax)
+  {
+    reset();
+  }
+  else
+  {
+    m_ActualStep = m_TotalTick / STEP_RESOLUTION;
+    m_StepTick = m_TotalTick % STEP_RESOLUTION;
+  }
 }
 
 void StepControl::setStepOn(uint16_t onTime)
