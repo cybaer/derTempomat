@@ -47,6 +47,8 @@ int main(void)
 {
   sei();
   initHW();
+
+
   // Configure the timers.
     Timer<1>::set_prescaler(1);
     Timer<1>::set_mode(0, _BV(WGM12), 3);
@@ -62,10 +64,59 @@ int main(void)
 
 
   Adc::StartConversion(AdcChannelCV);
+  Leds LEDs;
+  SWITCHES Switches;
+
+  LEDs.init();
+  Switches.init();
+  // after initialization of all port extender IOs
+  initHW();
+  _delay_ms(50);
+  portExtender::WriteIO();
+
+  LEDs.setColor(true, 1);
 
   while(1)
   {
     static uint8_t step = 3;
+    if(poll)
+    {
+      poll = false;
+      Switch_A::Read();
+      Switch_B::Read();
+      Switch_Mod::Read();
+      portExtender::ReadIO();
+      Switches.refresh();
+
+      //Led_1.set(Sw_1.active());
+      static uint16_t i=0;
+      if(i++ & 0x880)
+        LEDs.setWithMask(0x1f);
+      else
+        LEDs.clear();
+
+      int8_t index = 0;
+      if(Switches.isActive(index))
+      {
+        LEDs.set(index);
+      }
+      else
+      {
+        LEDs.clear();
+      }
+      portExtender::WriteIO();
+    }
+    int8_t index = 1;
+
+
+    //LED_A::set_value(Switch_A::low());
+    LED_B::set_value(Switch_B::low());
+    LED_Mod::set_value(Switch_Mod::low());
+    LED_Takt::set_value(Switch_Mod::low());
+
+
+
+        //Switch_1::active());
 
     if (Adc::ready())
     {

@@ -14,7 +14,7 @@
 
 VERSION        = 0.1
 MCU_NAME       = 328
-F_CPU          = 8000000
+F_CPU          = 20000000
 TARGET         = derTempomat
 PACKAGES       = avrlib avrlib/devices ./
 
@@ -28,7 +28,7 @@ SYSEX_FLAGS    = --page_size=64 --device_id=3
 # -DUSE_SH_SEQUENCER
 EXTRA_DEFINES  = -DDISABLE_DEFAULT_UART_RX_ISR -DUSE_SH_SEQUENCER
 
-LFUSE          = e2
+LFUSE          = ff
 HFUSE          = d9
 EFUSE          = 07
 LOCK           = ff

@@ -55,7 +55,7 @@ typedef Inverter<Gpio<PortD, 0> > Output_4;  // 2
 typedef Inverter<Gpio<PortD, 3> > Output_5;  // x
 
 // HW SPI
-static const uint8_t SPI_Speed = 2;
+static const uint8_t SPI_Speed = 4;
 typedef SpiMasterBase<MSB_FIRST, SPI_Speed> spi_master;
 
 // Port Extender
@@ -68,13 +68,14 @@ typedef LED<PortPin<portExtender, PORT_A, 5>, PortPin<portExtender, PORT_A, 7> >
 typedef LED<PortPin<portExtender, PORT_B, 5>, PortPin<portExtender, PORT_B, 3> > LED_4;
 typedef LED<PortPin<portExtender, PORT_B, 2>, PortPin<portExtender, PORT_B, 0> > LED_5;
 
-typedef Switch<portExtender, PORT_A, 0> Switch_1;
+typedef Switch<portExtender, PORT_B, 7> Switch_1;
 typedef Switch<portExtender, PORT_A, 2> Switch_2;
 typedef Switch<portExtender, PORT_A, 6> Switch_3;
 typedef Switch<portExtender, PORT_B, 4> Switch_4;
 typedef Switch<portExtender, PORT_B, 1> Switch_5;
 
-
+typedef LEDGroup5 <LED_1, LED_2, LED_3, LED_4, LED_5> Leds;
+typedef SwitchGroup5 <Switch_1, Switch_2, Switch_3, Switch_4, Switch_5> SWITCHES;
 
 typedef Gpio<PortB, 7> Debug;                    // 10
 
@@ -86,6 +87,9 @@ inline void initInputs(void)
 {
   ResetIn::init();
   ClockIn::init();
+  Switch_A::Init();
+  Switch_B::Init();
+  Switch_Mod::Init();
 }
 inline void initOutputs(void)
 {
@@ -101,6 +105,14 @@ inline void initOutputs(void)
   Output_5::set_value(false);
   Debug::set_mode(DIGITAL_OUTPUT);
   Debug::set_value(true);
+  LED_A::set_mode(DIGITAL_OUTPUT);
+  LED_A::set_value(false);
+  LED_B::set_mode(DIGITAL_OUTPUT);
+  LED_B::set_value(false);
+  LED_Mod::set_mode(DIGITAL_OUTPUT);
+  LED_Mod::set_value(false);
+  LED_Takt::set_mode(DIGITAL_OUTPUT);
+  LED_Takt::set_value(false);
 }
 
 inline void initAnalogIn(void)
@@ -113,6 +125,8 @@ inline void initHW(void)
   initInputs();
   initOutputs();
   initAnalogIn();
+  spi_master::Init();
+  portExtender::Init();
 }
 
 #endif /* HARDWARECONFIG_H_ */
