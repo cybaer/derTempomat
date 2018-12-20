@@ -12,26 +12,27 @@
 #include "HardwareConfig.h"
 #include "clock.h"
 
-volatile uint8_t num_clock_ticks = 0;
+//volatile uint8_t num_clock_ticks = 0;
 volatile bool poll = false;
 
 ISR(TIMER1_COMPA_vect)
 {
-  PwmChannel1A::set_frequency(clock.Tick());  // 256 Ticks per Clock from ClockInput
+  PwmChannel1A::set_frequency(clock.Tick());  // 240 Ticks per Clock from ClockInput
   if(clock.running())
   {
-    ++num_clock_ticks;
+   // ++num_clock_ticks;
   }
+  Output_1::Toggle();
 }
 
 ISR(TIMER2_OVF_vect, ISR_NOBLOCK)
 {
   //ca 4kHz
-  while (num_clock_ticks)
-  {
-    --num_clock_ticks;
+  //while (num_clock_ticks)
+  //{
+  //  --num_clock_ticks;
     //ui.OnClock(); // reicht Clock an die App weiter
-  }
+  //}
   static int8_t subClock = 0;
   subClock = (subClock + 1) & 3;
 
@@ -50,9 +51,14 @@ int main(void)
 
 
   // Configure the timers.
-    Timer<1>::set_prescaler(1);
-    Timer<1>::set_mode(0, _BV(WGM12), 3);
-    PwmChannel1A::set_frequency(625000L/120); //ToDo: magic numbers
+    static const uint8_t PRESCALER = 3;
+    static const uint8_t PRESCALER_VALUE = 64;
+    //PWM mit CTC
+    Timer<1>::set_mode(0, _BV(WGM12), PRESCALER);
+    int16_t startFreq = 500;
+    int16_t counterForStartFreq = (20000000L / PRESCALER_VALUE) / startFreq -1;
+
+    PwmChannel1A::set_frequency(counterForStartFreq);
     Timer<1>::StartCompare();
 
     //     16MHz / (8 * 510) = 3906,25 Hz
@@ -105,14 +111,17 @@ int main(void)
         LEDs.clear();
       }
       portExtender::WriteIO();
+
+
+
     }
     int8_t index = 1;
 
 
     //LED_A::set_value(Switch_A::low());
-    LED_B::set_value(Switch_B::low());
-    LED_Mod::set_value(Switch_Mod::low());
-    LED_Takt::set_value(Switch_Mod::low());
+    //LED_B::set_value(Switch_B::low());
+    //LED_Mod::set_value(Switch_Mod::low());
+    //LED_Takt::set_value(Switch_Mod::low());
 
 
 
@@ -130,7 +139,12 @@ int main(void)
 
     }
 
-    if(ClockIn::isTriggered()) clock.ClockInEdge();
+    if(ClockIn::isTriggered())
+    {
+      clock.ClockInEdge();
+      uint8_t takt = clock.getStepCount() == 0;
+      LED_Takt::set_value(takt);
+    }
 
   }
 }

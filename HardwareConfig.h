@@ -48,11 +48,11 @@ typedef EdgeTrigger<Gpio<PortC, 0>, 0> ClockIn;  // 23
 typedef EdgeTrigger<Gpio<PortC, 1>, 0> ResetIn;  // 24
 typedef Gpio<PortD, 1> ModIn;  // 31
 
-typedef Inverter<Gpio<PortD, 4> > Output_1;  // 6
-typedef Inverter<Gpio<PortD, 2> > Output_2;  // 4
-typedef Inverter<Gpio<PortD, 1> > Output_3;  // 3
-typedef Inverter<Gpio<PortD, 0> > Output_4;  // 2
-typedef Inverter<Gpio<PortD, 3> > Output_5;  // x
+typedef Inverter<Gpio<PortC, 2> > Output_5;  // 6
+typedef Inverter<Gpio<PortC, 3> > Output_4;  // 4
+typedef Inverter<Gpio<PortC, 4> > Output_3;  // 3
+typedef Inverter<Gpio<PortC, 5> > Output_2;  // 2
+typedef Inverter<Gpio<PortD, 0> > Output_1;  // x
 
 // HW SPI
 static const uint8_t SPI_Speed = 4;
@@ -94,7 +94,7 @@ inline void initInputs(void)
 inline void initOutputs(void)
 {
   Output_1::set_mode(DIGITAL_OUTPUT);
-  Output_1::set_value(false);
+  Output_1::set_value(true);
   Output_2::set_mode(DIGITAL_OUTPUT);
   Output_2::set_value(false);
   Output_3::set_mode(DIGITAL_OUTPUT);

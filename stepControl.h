@@ -10,7 +10,7 @@
 
 #include <inttypes.h>
 
-static const uint8_t STEP_RESOLUTION = 256;
+static const uint8_t STEP_RESOLUTION = 240;
 
 struct StepData
 {
