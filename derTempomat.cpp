@@ -4,7 +4,7 @@
  *  Created on: 16.07.2018
  *      Author: cybaer
  */
-
+#include <avr/io.h>
 #include <avr/interrupt.h>
 #include "avrlib/time.h"
 #include "avrlib/gpio.h"
@@ -46,7 +46,7 @@ ISR(TIMER2_OVF_vect, ISR_NOBLOCK)
 
 int main(void)
 {
-  sei();
+
   initHW();
 
 
@@ -60,6 +60,7 @@ int main(void)
 
     PwmChannel1A::set_frequency(counterForStartFreq);
     Timer<1>::StartCompare();
+    //TIMSK |= (1<<OCIE1A);
 
     //     16MHz / (8 * 510) = 3906,25 Hz
     // prescaler(2)_|
@@ -67,7 +68,7 @@ int main(void)
     Timer<2>::set_mode(TIMER_PWM_PHASE_CORRECT);
     Timer<2>::Start();
 
-
+    sei();
 
   Adc::StartConversion(AdcChannelCV);
   Leds LEDs;

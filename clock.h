@@ -32,7 +32,7 @@ public:
   static inline void stop(void) { m_Running = false; }
   static inline void reset(void);
   static inline bool running(void) { return m_Running; }
-  static inline int16_t Tick()
+  static inline uint16_t Tick()
   {
     // better calc here the m_Interval
     m_TickCount++;
@@ -43,8 +43,11 @@ public:
   {
     // safe actual m_TickCount (Attention! 16bit copy not thread safe)
     uint16_t newTick = m_TickCount;
+    if(newTick != m_TickCount) LED_B::set_value(true);
     // 240 Ticks from Clock to Clock
-    m_Interval = (m_Interval * (newTick - m_OldTick)) /240;
+    uint16_t deltaTick = newTick - m_OldTick;
+    uint32_t numerator = static_cast<uint32_t>(m_Interval) * deltaTick;
+    m_Interval = numerator / 240;
     m_OldTick = newTick;
     /// Better: calc new m_Inetrval in context of Tick() --> no safty problem with 16bit vars
 
@@ -61,7 +64,7 @@ public:
 private:
   static bool m_Running;
   //static uint32_t m_Clock;
-  static uint16_t m_TickCount;
+  static volatile uint16_t m_TickCount;
   static uint16_t m_OldTick;
   static uint8_t m_StepCount;
   //static uint16_t m_Intervals[NumStepsInGroovePattern]; für Groove Pattern, Humanizing, ...

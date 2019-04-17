@@ -13,7 +13,7 @@ Clock clock;
 // statics
 bool Clock::m_Running = true;
 //uint32_t Clock::m_Clock;
-uint16_t Clock::m_TickCount = 0;
+volatile uint16_t Clock::m_TickCount = 0;
 uint8_t Clock::m_StepCount = 8;
 uint16_t Clock::m_OldTick = 0;
 //uint16_t Clock::m_Intervals[NumStepsInGroovePattern]; für Groove Pattern, Humanizing, ...
