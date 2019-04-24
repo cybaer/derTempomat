@@ -13,6 +13,7 @@
 #include "HardwareConfig.h"
 
 using namespace avrlib;
+static const uint8_t INTERVALL_TICKS = 240;
 static const int8_t STEPS = 8;
 class Clock
 {
@@ -34,22 +35,25 @@ public:
   static inline bool running(void) { return m_Running; }
   static inline uint16_t Tick()
   {
-    // better calc here the m_Interval
     m_TickCount++;
-    // calc m_StepCount
     return m_Interval;
   }
   static void ClockInEdge(void)
   {
+    uint16_t newTick;
     // safe actual m_TickCount (Attention! 16bit copy not thread safe)
-    uint16_t newTick = m_TickCount;
-    if(newTick != m_TickCount) LED_B::set_value(true);
+    do newTick = m_TickCount;
+    while(newTick != m_TickCount);
     // 240 Ticks from Clock to Clock
     uint16_t deltaTick = newTick - m_OldTick;
     uint32_t numerator = static_cast<uint32_t>(m_Interval) * deltaTick;
-    m_Interval = numerator / 240;
+    volatile uint16_t interval = numerator / INTERVALL_TICKS;
+    // safety copy of 16 bit
+    cli();
+    m_Interval = interval;
+    sei();
+
     m_OldTick = newTick;
-    /// Better: calc new m_Inetrval in context of Tick() --> no safty problem with 16bit vars
 
     LED_A::Toggle();
 
