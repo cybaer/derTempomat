@@ -11,6 +11,7 @@
 #include "avrlib/adc.h"
 #include "HardwareConfig.h"
 #include "clock.h"
+#include "ui.h"
 
 //volatile uint8_t num_clock_ticks = 0;
 volatile bool poll = false;
@@ -46,10 +47,6 @@ ISR(TIMER2_OVF_vect, ISR_NOBLOCK)
 
 int main(void)
 {
-
-  initHW();
-
-
   // Configure the timers.
     static const uint8_t PRESCALER = 3;
     static const uint8_t PRESCALER_VALUE = 64;
@@ -71,17 +68,14 @@ int main(void)
     sei();
 
   Adc::StartConversion(AdcChannelCV);
-  Leds LEDs;
-  SWITCHES Switches;
 
-  LEDs.init();
-  Switches.init();
+  ui.init();
   // after initialization of all port extender IOs
   initHW();
   _delay_ms(50);
+
   portExtender::WriteIO();
 
-  LEDs.setColor(true, 1);
 
   while(1)
   {
@@ -89,50 +83,16 @@ int main(void)
     if(poll)
     {
       poll = false;
-      Switch_A::Read();
-      Switch_B::Read();
-      Switch_Mod::Read();
-      portExtender::ReadIO();
-      Switches.refresh();
+      ui.poll();
+      ui.doEvents();
 
-      //Led_1.set(Sw_1.active());
-      static uint16_t i=0;
-      if(i++ & 0x880)
-        LEDs.setWithMask(0x1f);
-      else
-        LEDs.clear();
-
-      int8_t index = 0;
-      if(Switches.isActive(index))
-      {
-        LEDs.set(index);
-      }
-      else
-      {
-        LEDs.clear();
-      }
       portExtender::WriteIO();
-
-
-
     }
-    int8_t index = 1;
-
-
-    //LED_A::set_value(Switch_A::low());
-    //LED_B::set_value(Switch_B::low());
-    //LED_Mod::set_value(Switch_Mod::low());
-    //LED_Takt::set_value(Switch_Mod::low());
-
-
-
-        //Switch_1::active());
 
     if (Adc::ready())
     {
         uint8_t threshold = MAX_CV - (Adc::Read(AdcChannelCV) >> 2) & 0xFF;
         Adc::StartConversion(AdcChannelCV);
-
     }
 
     if(ResetIn::isTriggered())

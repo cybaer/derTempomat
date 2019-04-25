@@ -12,6 +12,12 @@
  {
 
  }
+void Ui::init()
+{
+  LEDs.init();
+  LEDs.setColor(true, 1);
+  Switches.init();
+}
 void Ui::poll()
 {
   Switch_A::Read();
@@ -19,6 +25,19 @@ void Ui::poll()
   Switch_Mod::Read();
   portExtender::ReadIO();
   Switches.refresh();
+}
+
+void Ui::doEvents()
+{
+  int8_t index = 0;
+  if(Switches.isActive(index))
+  {
+    LEDs.set(index);
+  }
+  else
+  {
+    LEDs.clear();
+  }
 }
 
 Ui ui;
