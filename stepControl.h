@@ -24,7 +24,7 @@ public:
   static const int8_t MAX_STEPS = 32;
   StepControl();
   void reset();
-  void onTick();
+  bool onTick();
   void setStepOn(uint16_t onTime);
   void setStepCount(uint8_t count);
 
@@ -33,7 +33,7 @@ private:
   uint8_t m_ActualStep;
   uint16_t m_TotalTick;
   uint8_t m_StepTick;
-  uint8_t m_TotalTickMax;
+  uint16_t m_TotalTickMax;
   uint8_t m_StepCount;
 };
 

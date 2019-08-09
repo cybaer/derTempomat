@@ -14,7 +14,8 @@ Clock clock;
 bool Clock::m_Running = true;
 //uint32_t Clock::m_Clock;
 volatile uint16_t Clock::m_TickCount = 0;
-uint8_t Clock::m_StepCount = 8;
+int8_t Clock::m_Steps = 8;
+int8_t Clock::m_StepCount = 8;
 uint16_t Clock::m_OldTick = 0;
 //uint16_t Clock::m_Intervals[NumStepsInGroovePattern]; für Groove Pattern, Humanizing, ...
 uint16_t Clock::m_Interval = 1301;

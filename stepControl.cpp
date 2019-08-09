@@ -14,15 +14,22 @@ StepControl::StepControl()
 , m_TotalTickMax(8*STEP_RESOLUTION)
 , m_StepCount(8)
 {
+  // test init
+    for(int8_t i=0; i<8; i++)
+    {
+      m_StepTable[i].on = 1;
+      m_StepTable[i].off = 30;
+    }
 }
 void StepControl::reset()
 {
   m_ActualStep = 0;
   m_TotalTick = 0;
   m_StepTick = 0;
+
 }
 
-void StepControl::onTick()
+bool StepControl::onTick()
 {
   ++m_TotalTick;
   if(m_TotalTick == m_TotalTickMax)
@@ -34,6 +41,8 @@ void StepControl::onTick()
     m_ActualStep = m_TotalTick / STEP_RESOLUTION;
     m_StepTick = m_TotalTick % STEP_RESOLUTION;
   }
+  return    m_StepTick >= m_StepTable[m_ActualStep].on
+         && m_StepTick < m_StepTable[m_ActualStep].off ;
 }
 
 void StepControl::setStepOn(uint16_t onTime)

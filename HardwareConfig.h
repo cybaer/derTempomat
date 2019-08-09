@@ -32,12 +32,21 @@
 #include "avrlib/spi.h"
 #include "avrlib/adc.h"
 
+// __Compiler Bug__
+__extension__ typedef int __guard __attribute__((mode (__DI__)));
+
+extern "C" int __cxa_guard_acquire(__guard *);
+extern "C" void __cxa_guard_release (__guard *);
+extern "C" void __cxa_guard_abort (__guard *);
+extern "C" void __cxa_pure_virtual();
+
+
 using namespace avrlib;
 static const uint8_t MAX_CV = 122;
 
-typedef DebouncedSwitch< Gpio<PortB, 0> > Switch_A;  // 12
-typedef DebouncedSwitch< Gpio<PortD, 6> > Switch_B;  // 10
-typedef DebouncedSwitch< Gpio<PortD, 5> > Switch_Mod;  // 9
+typedef DebouncedSwitch< Gpio<PortB, 0> > Button_A;  // 12
+typedef DebouncedSwitch< Gpio<PortD, 6> > Button_B;  // 10
+typedef DebouncedSwitch< Gpio<PortD, 5> > Button_Mod;  // 9
 
 typedef Gpio<PortB, 1> LED_A;  // 13
 typedef Gpio<PortD, 7> LED_B;  // 11
@@ -77,6 +86,7 @@ typedef Switch<portExtender, PORT_B, 1> Switch_5;
 typedef LEDGroup5 <LED_1, LED_2, LED_3, LED_4, LED_5> Leds;
 typedef SwitchGroup5 <Switch_1, Switch_2, Switch_3, Switch_4, Switch_5> SWITCHES;
 
+
 typedef Gpio<PortB, 7> Debug;                    // 10
 
 static const uint8_t AdcChannelCV = 7;
@@ -87,9 +97,9 @@ inline void initInputs(void)
 {
   ResetIn::init();
   ClockIn::init();
-  Switch_A::Init();
-  Switch_B::Init();
-  Switch_Mod::Init();
+  Button_A::Init();
+  Button_B::Init();
+  Button_Mod::Init();
 }
 inline void initOutputs(void)
 {

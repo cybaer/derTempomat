@@ -21,13 +21,15 @@ public:
   static inline void init(void)
   {
     m_TickCount = 0;
+    m_Steps = STEPS;
     m_StepCount = STEPS;
     m_Running = true;
   }
+  static inline void setStepCount(int8_t steps) { m_Steps = steps; }
   static inline void start(void)
   {
     m_TickCount = 0;
-    m_StepCount = STEPS;
+    m_StepCount = m_Steps;
     m_Running = true;
   }
   static inline void stop(void) { m_Running = false; }
@@ -38,7 +40,7 @@ public:
     m_TickCount++;
     return m_Interval;
   }
-  static void ClockInEdge(void)
+  static bool ClockInEdge(void)
   {
     uint16_t newTick;
     // safe actual m_TickCount (Attention! 16bit copy not thread safe)
@@ -57,8 +59,9 @@ public:
 
     LED_A::Toggle();
 
-    if(++m_StepCount >= STEPS)
+    if(++m_StepCount >= STEPS || deltaTick > INTERVALL_TICKS * 10l)
       m_StepCount = 0;
+    return m_StepCount == 0;
   }
 
   static int8_t getStepCount(void) { return m_StepCount; }
@@ -70,7 +73,8 @@ private:
   //static uint32_t m_Clock;
   static volatile uint16_t m_TickCount;
   static uint16_t m_OldTick;
-  static uint8_t m_StepCount;
+  static int8_t m_Steps;
+  static int8_t m_StepCount;
   //static uint16_t m_Intervals[NumStepsInGroovePattern]; für Groove Pattern, Humanizing, ...
   static uint16_t m_Interval;
 };

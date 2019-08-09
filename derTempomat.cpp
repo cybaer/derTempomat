@@ -13,7 +13,14 @@
 #include "clock.h"
 #include "ui.h"
 
-//volatile uint8_t num_clock_ticks = 0;
+// __Compiler Bug__
+int __cxa_guard_acquire(__guard *g) {return !*(char *)(g);};
+void __cxa_guard_release (__guard *g) {*(char *)g = 1;};
+void __cxa_guard_abort (__guard *) {};
+void __cxa_pure_virtual() {};
+
+
+volatile uint8_t num_clock_ticks = 0;
 volatile bool poll = false;
 
 ISR(TIMER1_COMPA_vect)
@@ -21,7 +28,7 @@ ISR(TIMER1_COMPA_vect)
   PwmChannel1A::set_frequency(clock.Tick());  // 240 Ticks per Clock from ClockInput
   if(clock.running())
   {
-   // ++num_clock_ticks;
+    ++num_clock_ticks;
   }
   Output_1::Toggle();
 }
@@ -29,11 +36,11 @@ ISR(TIMER1_COMPA_vect)
 ISR(TIMER2_OVF_vect, ISR_NOBLOCK)
 {
   //ca 4kHz
-  //while (num_clock_ticks)
-  //{
-  //  --num_clock_ticks;
-    //ui.OnClock(); // reicht Clock an die App weiter
-  //}
+  while (num_clock_ticks)
+  {
+    --num_clock_ticks;
+    ui.onClock(); // reicht Clock an die App weiter
+  }
   static int8_t subClock = 0;
   subClock = (subClock + 1) & 3;
 
@@ -102,9 +109,10 @@ int main(void)
 
     if(ClockIn::isTriggered())
     {
-      clock.ClockInEdge();
-      uint8_t takt = clock.getStepCount() == 0;
-      LED_Takt::set_value(takt);
+      bool TaktStart = clock.ClockInEdge();
+      LED_Takt::set_value(TaktStart);
+      if(TaktStart)
+        ui.m_StepControl.reset();
     }
 
   }
