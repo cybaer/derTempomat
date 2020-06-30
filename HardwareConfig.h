@@ -59,9 +59,9 @@ typedef Gpio<PortD, 1> ModIn;  // 31
 
 typedef Inverter<Gpio<PortC, 2> > Output_5;  // 6
 typedef Inverter<Gpio<PortC, 3> > Output_4;  // 4
-typedef Inverter<Gpio<PortC, 4> > Output_3;  // 3
-typedef Inverter<Gpio<PortC, 5> > Output_2;  // 2
-typedef Inverter<Gpio<PortD, 0> > Output_1;  // x
+typedef Inverter<Gpio<PortC, 5> > Output_3;  // 2
+typedef Inverter<Gpio<PortC, 4> > Output_2;  // 3
+typedef Inverter<Gpio<PortD, 0> > Output_1;  // 1
 
 // HW SPI
 static const uint8_t SPI_Speed = 4;

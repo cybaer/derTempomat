@@ -6,23 +6,48 @@
  */
 
 #include "app.h"
-#include "stepControl.h"
+#include "ui.h"
 
-AppMultivider::AppMultivider(StepControl& stepControl)
+
+AppMultivider::AppMultivider()
 : m_ActiveChannel(0)
+, m_Tick(0)
+, m_Clock()
+, m_Multivider{m_Clock,m_Clock,m_Clock,m_Clock,m_Clock}
 {
-  m_Control[0].Control = &stepControl;
-  m_Control[0].isActive = true;
-  m_Control[0].Divider = 1;
-  m_Control[0].Multiplier = 1;
-  m_Control[0].PhaseCoarse = 0;
-  m_Control[0].PhaseFine = 0;
+
 }
+
+void AppMultivider::onTick(void)
+{
+  for(int8_t i=0; i<5; i++)
+  {
+    //m_Multivider[i].onTick();
+  }
+
+  m_Tick++;
+}
+
+
+
+void AppMultivider::newInput(bool in)
+{
+  m_Clock.newInput(in);
+  const int32_t& counter(m_Clock.getCounter());
+
+
+  int8_t out=0;
+  out |= setOut1(in);
+  out |= setOut2(in);
+  out |= setOut3(in);
+  out |= setOut4(in);
+  out |= setOut5(in);
+  ui.LEDs.setWithMask(out);
+}
+
 
 bool AppMultivider::setActiveChannel(int8_t channel) { m_ActiveChannel = channel; }
+void AppMultivider::setDivider(int8_t channel, int8_t div) { m_Multivider[channel-1].setDivisor(div); }
+void AppMultivider::setMultiplier(int8_t channel, int8_t mul) { m_Multivider[channel-1].setFactor(mul); }
 
-void AppMultivider::setDivider(int8_t divider)
-{
-  m_Control[m_ActiveChannel].Divider = divider;
-}
 

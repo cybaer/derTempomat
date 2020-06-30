@@ -9,7 +9,12 @@
 #include "ui.h"
 
  Ui::Ui()
- : m_State(&Ui::MultividerModeState::getInstance())
+ : LEDs()
+ , Switches()
+ , m_AppMultivider()
+ , m_State(&Ui::UseModeState::getInstance())
+ , m_Button(0)
+ , m_Counter(0)
  {
 
  }
@@ -18,8 +23,7 @@ void Ui::init()
   LEDs.init();
   LEDs.setColor(true, 1);
   Switches.init();
-  m_StepControl.setStepCount(8);
-  m_StepControl.reset();
+
 }
 void Ui::poll()
 {
@@ -36,70 +40,101 @@ void Ui::doEvents()
   if(Button_A::raised()) m_State->onReleaseButtonA(*this);
   if(Button_B::lowered()) m_State->onButtonB(*this);
   if(Button_B::raised()) m_State->onReleaseButtonB(*this);
-
-  /*int8_t index = 0;
-  if(Switches.isActive(index))
-  {
-    LEDs.set(index);
-  }
-  else
-  {
-    LEDs.clear();
-  }*/
+  int8_t pressedSwitch = 0;
+  if(Switches.getPressed(pressedSwitch)) m_State->onButtonX(*this, pressedSwitch+1);
 }
 
 void Ui::onClock()
 {
-  bool signal = m_StepControl.onTick();
-  if(signal)
-    {
-      LEDs.set(1);
-    }
-    else
-    {
-      LEDs.clear();
-    }
+  m_AppMultivider.onTick();
 
 }
 
 /*** State machine ***/
-void Ui::MultividerModeState::onEntry(Context_t& context) const
+void Ui::UseModeState::onEntry(Context_t& context) const
 {
 
 }
-void Ui::MultividerModeState::onExit(Context_t& context) const
+void Ui::UseModeState::onExit(Context_t& context) const
 {
 
 }
-void Ui::MultividerModeState::onButtonA(Context_t& context) const
+void Ui::UseModeState::onButtonA(Context_t& context) const
 {
-  context.setState(Ui::HoldButtonAState::getInstance());
+  context.setState(Ui::DividerState::getInstance());
 }
 
-void Ui::MultividerModeState::onButtonB(Context_t& context) const
+void Ui::UseModeState::onButtonB(Context_t& context) const
+{
+  context.setState(Ui::MultiplierState::getInstance());
+}
+
+void Ui::UseModeState::onButtonAB(Context_t& context) const
 {
 
 }
 
-void Ui::HoldButtonAState::onEntry(Context_t& context) const
+void Ui::DividerState::onEntry(Context_t& context) const
 {
-  LED_A::High();
+  context.m_Button = 0;
+  context.m_Counter = 0;
 }
-void Ui::HoldButtonAState::onExit(Context_t& context) const
+void Ui::DividerState::onExit(Context_t& context) const
 {
-  LED_A::Low();
+  context.m_AppMultivider.setDivider(context.m_Button, context.m_Counter);
+  context.m_AppMultivider.setMultiplier(context.m_Button, 1);
 }
-void Ui::HoldButtonAState::onReleaseButtonA(Context_t& context) const
+void Ui::DividerState::onReleaseButtonA(Context_t& context) const
 {
-  context.setState(Ui::MultividerModeState::getInstance());
+  context.setState(Ui::UseModeState::getInstance());
 }
-void Ui::HoldButtonAState::onButtonB(Context_t& context) const
+void Ui::DividerState::onButtonX(Context_t& context, int8_t button) const
 {
-  LED_B::Toggle();
+  context.m_Button = button;
+  context.m_Counter++;
 }
-void Ui::HoldButtonAState::onButtonX(Context_t& context, int8_t button) const
+
+void Ui::MultiplierState::onEntry(Context_t& context) const
+{
+  context.m_Button = 0;
+  context.m_Counter = 0;
+}
+void Ui::MultiplierState::onExit(Context_t& context) const
+{
+  context.m_AppMultivider.setMultiplier(context.m_Button, context.m_Counter);
+  context.m_AppMultivider.setDivider(context.m_Button, 1);
+}
+void Ui::MultiplierState::onReleaseButtonB(Context_t& context) const
+{
+  context.setState(Ui::UseModeState::getInstance());
+}
+void Ui::MultiplierState::onButtonX(Context_t& context, int8_t button) const
+{
+  context.m_Button = button;
+  context.m_Counter++;
+}
+
+
+void Ui::PhaseAdjustState::onEntry(Context_t& context) const
 {
 
+}
+void Ui::PhaseAdjustState::onExit(Context_t& context) const
+{
+  context.LEDs.clear();
+}
+void Ui::PhaseAdjustState::onButtonA(Context_t& context) const
+{
+
+}
+void Ui::PhaseAdjustState::onButtonB(Context_t& context) const
+{
+
+}
+void Ui::Edit_State::onButtonX(Context_t& context, int8_t button) const
+{
+  context.LEDs.set(button);
+  context.setState(Ui::PhaseAdjustState::getInstance());
 }
 
 Ui ui;

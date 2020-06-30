@@ -13,7 +13,7 @@
 #include "HardwareConfig.h"
 
 using namespace avrlib;
-static const uint8_t INTERVALL_TICKS = 240;
+static const uint8_t INTERVALL_TICKS = 256;
 static const int8_t STEPS = 8;
 class Clock
 {

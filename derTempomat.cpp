@@ -20,6 +20,7 @@ void __cxa_guard_release (__guard *g) {*(char *)g = 1;};
 void __cxa_guard_abort (__guard *) {};
 void __cxa_pure_virtual() {};
 
+auto fl{12.1f};
 
 volatile uint8_t num_clock_ticks = 0;
 volatile bool poll = false;
@@ -31,7 +32,6 @@ ISR(TIMER1_COMPA_vect)
   {
     ++num_clock_ticks;
   }
-  Output_1::Toggle();
 }
 
 ISR(TIMER2_OVF_vect, ISR_NOBLOCK)
@@ -111,10 +111,8 @@ int main(void)
     if(ClockIn::isTriggered())
     {
       bool TaktStart = clock.ClockInEdge();
-      LED_Takt::set_value(TaktStart);
-      if(TaktStart)
-        ui.m_StepControl.reset();
     }
-
+    ui.m_AppMultivider.newInput(ClockIn::getValue());
+    LED_Takt::set_value(ClockIn::getValue());
   }
 }
